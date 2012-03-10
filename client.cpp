@@ -6,11 +6,20 @@
 long factor_pair(long number, long factor);
 bool is_perfect(long number);
 int sum_factors(long number);
+int perfects(long lower, long higher);
 
 int main(int argc, char const *argv[]){
-	long test = strtol( argv[1], NULL, 10 );
-	for(int i = 2; i <= test ; ++i){
-		is_perfect(i);
+	long lower = strtol( argv[1], NULL, 10 );
+	long higher = strtol( argv[2], NULL, 10 );
+	perfects(lower,higher);
+}
+
+int perfects(long lower, long higher){
+
+	for(int i = lower; i <= higher ; ++i){
+		if(is_perfect(i)){
+			std::cout << i << std::endl;
+		}
 	}
 	
 }
