@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 #include <netdb.h> 
 #include <string.h>
+#include <sstream>
 
 #define PORT 7331
 
@@ -18,10 +19,12 @@ int sum_factors(long number);
 int perfects(long lower, long higher);
 int create_socket();
 int connect_socket(int sockfd);
-int read_socket(int sockfd);
+int read_socket(int sockfd, char message[]);
 int write_socket(int sockfd,char message[]);
 int iops();
 
+static int iops_i;
+static int d_count;
 
 int main(int argc, char const *argv[]){
 	int sockfd = create_socket();
@@ -30,7 +33,30 @@ int main(int argc, char const *argv[]){
 	sprintf(message, "IOPS %i", iops());
 	std::cout << message << std::endl;
 	write_socket(sockfd,message);
-	read_socket(sockfd);
+	bzero(message,256);
+	read_socket(sockfd, message);
+	std::string str_message = std::string(message);
+	std::cout << str_message << std::endl;
+	std::istringstream iss(str_message);
+	int count = 0;
+	std::string lower_s;
+	std::string higher_s; 
+	do{
+		std::string sub;
+		if(count == 2){
+			iss >> lower_s;
+		}else if(count == 3){
+			iss >> higher_s;
+		}else{
+			iss >> sub;
+		}
+		count++;
+	}while(iss);
+	int lower_i = atoi(lower_s.c_str());
+	int higher_i = atoi(higher_s.c_str());
+	std::cout << atoi(lower_s.c_str()) << " to " << atoi(higher_s.c_str())<< std::endl;
+	perfects(lower_i,higher_i);
+	std::cout << "New IOPS " << iops_i << std::endl;
 }
 
 int iops(){
@@ -40,7 +66,9 @@ int iops(){
 		int j = 10000/i;
 	}
 	end_t = clock();
-	return end_t - begin_t;
+	iops_i = 3*(end_t - begin_t);
+	//std::cout << ((double)(end_t - begin_t))/CLOCKS_PER_SEC << std::endl;
+	return iops_i;
 }
 
 int create_socket(){
@@ -66,12 +94,10 @@ int connect_socket(int sockfd){
 	}
 }
 
-int read_socket(int sockfd){
-	char message[256];
+int read_socket(int sockfd, char message[]){
 	if(read(sockfd,message, 255)< 0){
 		//error
 	}
-	std::cout << message << std::endl;
 }
 
 int write_socket(int sockfd,char message[]){
@@ -82,12 +108,15 @@ int write_socket(int sockfd,char message[]){
 }
 
 int perfects(long lower, long higher){
-
+	clock_t begin_t, end_t;
+	begin_t = clock();
 	for(int i = lower; i <= higher ; ++i){
 		if(is_perfect(i)){
 			std::cout << i << std::endl;
 		}
 	}
+	end_t = clock();
+	iops_i = (end_t - begin_t)*1000000000/d_count;
 	
 }
 
@@ -115,5 +144,6 @@ long factor_pair(long number, long factor){
 	if(number % factor == 0){
 		return number / factor;	
 	}
+	d_count +=2;
 	return 0;
 }
