@@ -21,6 +21,7 @@ while 1:
 				divisions -= check
 				check += 1
 			client.send('RES '+str(lower) + ' '+ str(check-1))
+			print 'request from ' + str(lower) + ' to ' + str(check-1)
 		elif data_array[0] == 'PFN':
 			print 'Perfect: ' + str(data_array[1])
 			client.send('ACK PFN')
