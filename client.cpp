@@ -3,6 +3,8 @@
 #include <iostream>
 #include <math.h>
 
+#define PORT 7331
+
 long factor_pair(long number, long factor);
 bool is_perfect(long number);
 int sum_factors(long number);
@@ -15,19 +17,35 @@ int main(int argc, char const *argv[]){
 }
 
 int create_socket(){
-
+	int sockfd
+	if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1){
+		//error
+	}	
+	return sockfd;
 }
 
-int connect_socket(){
-
+int connect_socket(int sockfd){
+	struct sockaddr_in serveraddr;	
+	serveraddr.sin_family = AF_INET;
+	serveraddr.sin_addr.s_addr = gethostbyname("os-class.oregonstate.edu");
+	serveraddr.sin_port = htons(PORT);
+	memset(&(serveraddr.sin_zero), '\0', 8);
+	if(connect(sockfd,(struct sockaddr *) &serveraddr, sizeof(serveraddr))< 0){
+		//error
+	}
 }
 
 int read_socket(){
-
+	char message[256];
+	if(read(sockfd,message, 255)< 0){
+		//error
+	}
 }
 
-int write socket(){
-
+int write socket(int sockfd,message){
+	if (write(sockfd, message, strlen(message))< 0){
+		//error
+	}
 }
 
 int perfects(long lower, long higher){
