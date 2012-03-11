@@ -41,7 +41,11 @@ int main(int argc, char const *argv[]){
 
 int request_range(int sockfd, int *lower, int *higher){
 	char message[256];
+<<<<<<< HEAD
+	sprintf(message, "REQ %i", iops());
+=======
 	sprintf(message, "IOPS %i", iops_i);
+>>>>>>> 39e0e53037a74bd1bca9b5394a8b1dac59997f19
 	std::cout << message << std::endl;
 	write_socket(sockfd,message);
 	bzero(message,256);
@@ -50,11 +54,20 @@ int request_range(int sockfd, int *lower, int *higher){
 	int count = 0;
 	do{
 		std::string sub;
+<<<<<<< HEAD
+		if(count == 1){
+			iss >> lower_s;
+		}else if(count == 2){
+			iss >> higher_s;
+		}else{
+			iss >> sub;
+=======
 		iss >> sub;
 		if(count == 2){
 			*lower = atoi(sub.c_str());
 		}else if(count == 3){
 			*higher = atoi(sub.c_str());
+>>>>>>> 39e0e53037a74bd1bca9b5394a8b1dac59997f19
 		}
 		count++;
 	}while(iss);
