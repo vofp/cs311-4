@@ -14,6 +14,22 @@ int main(int argc, char const *argv[]){
 	perfects(lower,higher);
 }
 
+int create_socket(){
+
+}
+
+int connect_socket(){
+
+}
+
+int read_socket(){
+
+}
+
+int write socket(){
+
+}
+
 int perfects(long lower, long higher){
 
 	for(int i = lower; i <= higher ; ++i){
