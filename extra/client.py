@@ -2,7 +2,7 @@
 
 import socket 
 
-host = 'flip.engr.oregonstate.edu' 
+host = 'os-class.engr.oregonstate.edu' 
 port = 7331 
 size = 255 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
