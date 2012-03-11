@@ -71,7 +71,7 @@ int read_socket(int sockfd){
 	if(read(sockfd,message, 255)< 0){
 		//error
 	}
-	std::cout << message;
+	std::cout << message << std::endl;
 }
 
 int write_socket(int sockfd,char message[]){
