@@ -31,7 +31,7 @@ while 1:
 			print 'Exit requested'
 			client.send('ACK EXT')
 		else:
-			print 'Unknown data: 'data
+			print 'Unknown data: ' + data
 			client.send('NAK')
 	client.close()
 
