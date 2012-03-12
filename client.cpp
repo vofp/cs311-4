@@ -100,7 +100,6 @@ int request_range(int sockfd, int *lower_i, int *higher_i){
 }
 
 int iops(){
-	std::cout<< "running iops" << std::endl;
 	clock_t begin_t, end_t;
 	int j;
 	begin_t = clock();
@@ -109,7 +108,6 @@ int iops(){
 	}
 	end_t = clock();
 	iops_i = 3*(end_t - begin_t);
-	std::cout << "finished iops" << std::endl;
 	//std::cout << ((double)(end_t - begin_t))/CLOCKS_PER_SEC << std::endl;
 	return iops_i;
 }
@@ -161,7 +159,7 @@ int perfects(int sockfd, long lower, long higher){
 		}
 	}
 	end_t = clock();
-	//iops_i = (end_t - begin_t)*1000000000/d_count;
+	iops_i = (end_t - begin_t)*1000000000/d_count;
 	
 }
 
