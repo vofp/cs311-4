@@ -24,6 +24,8 @@ int connect_socket(int sockfd);
 int read_socket(int sockfd, char message[]);
 int write_socket(int sockfd,char message[]);
 int iops();
+int close_socket(int sockfd);
+int close_server(int sockfd);
 
 static int iops_i;
 static int d_count;
@@ -38,6 +40,34 @@ int main(int argc, char const *argv[]){
 		//close(sockfd);
 		perfects(sockfd,lower_i,higher_i);
 	}
+	//close_server(sockfd);
+	close_socket(sockfd);
+}
+
+int close_server(int sockfd){
+	char message[256];
+	sprintf(message, "EXT");
+	std::cout << message << std::endl;
+	write_socket(sockfd,message);
+	bzero(message,256);
+	read_socket(sockfd, message);
+	std::string str_message = std::string(message);
+	std::cout << str_message << std::endl;
+	std::istringstream iss(str_message);
+	close(sockfd);
+}
+
+int close_socket(int sockfd){
+	char message[256];
+	sprintf(message, "CLS");
+	std::cout << message << std::endl;
+	write_socket(sockfd,message);
+	bzero(message,256);
+	read_socket(sockfd, message);
+	std::string str_message = std::string(message);
+	std::cout << str_message << std::endl;
+	std::istringstream iss(str_message);
+	close(sockfd);
 }
 
 int request_range(int sockfd, int *lower_i, int *higher_i){
