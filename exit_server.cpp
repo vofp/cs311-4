@@ -32,19 +32,10 @@ static long iops_i;
 static long d_count;
 
 int main(int argc, char const *argv[]){
-	iops();
 	int sockfd = create_socket();
 	connect_socket(sockfd);
-	int lower_i;
-	int higher_i;
-	for(int i = 0; ; i++){
-		request_range(sockfd,&lower_i,&higher_i);
-		//close(sockfd);
-		perfects(sockfd,lower_i,higher_i);
-		finish_range(sockfd,lower_i,higher_i);
-	}
-	//close_server(sockfd);
-	close_socket(sockfd);
+	close_server(sockfd);
+	//close_socket(sockfd);
 }
 
 int close_server(int sockfd){
