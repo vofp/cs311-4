@@ -37,7 +37,6 @@ int main(int argc, char const *argv[]){
 	int lower_i;
 	int higher_i;
 	for(int i = 0; i < 10; i++){
-		std::cout << "request" << std::endl;
 		request_range(sockfd,&lower_i,&higher_i);
 		//close(sockfd);
 		perfects(sockfd,lower_i,higher_i);
@@ -107,7 +106,7 @@ int iops(){
 		j	= 10000/i;
 	}
 	end_t = clock();
-	iops_i = 3*(end_t - begin_t);
+	iops_i = (end_t - begin_t);
 	//std::cout << ((double)(end_t - begin_t))/CLOCKS_PER_SEC << std::endl;
 	return iops_i;
 }
