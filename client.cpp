@@ -17,7 +17,8 @@ long factor_pair(long number, long factor);
 bool is_perfect(long number);
 int request_range(int sockfd, int *lower_i, int *higher_i);
 int sum_factors(long number);
-int perfects(long lower, long higher);
+int perfects(int sockfd,long lower, long higher);
+int write_perfects(int sockfd, long number);
 int create_socket();
 int connect_socket(int sockfd);
 int read_socket(int sockfd, char message[]);
@@ -30,14 +31,13 @@ static int d_count;
 int main(int argc, char const *argv[]){
 	int sockfd = create_socket();
 	connect_socket(sockfd);
-
 	int lower_i;
-	int higher_i;
-
-	request_range(sockfd,&lower_i,&higher_i);	
-
-	perfects(lower_i,higher_i);
-	std::cout << "New IOPS " << iops_i << std::endl;
+	for(int i = 0; i < 10; i++){
+		int higher_i;
+		request_range(sockfd,&lower_i,&higher_i);
+		//close(sockfd);
+		perfects(sockfd,lower_i,higher_i);
+	}
 }
 
 int request_range(int sockfd, int *lower_i, int *higher_i){
@@ -64,8 +64,7 @@ int request_range(int sockfd, int *lower_i, int *higher_i){
 		}
 		count++;
 	}while(iss);
-	std::cout << *lower_i << " to " << *higher_i<< std::endl;
-	
+	std::cout << *lower_i << " to " << *higher_i<< std::endl;	
 }
 
 int iops(){
@@ -116,17 +115,32 @@ int write_socket(int sockfd,char message[]){
 	
 }
 
-int perfects(long lower, long higher){
+int perfects(int sockfd, long lower, long higher){
 	clock_t begin_t, end_t;
 	begin_t = clock();
-	for(int i = lower; i <= higher ; ++i){
+	for(long i = lower; i <= higher ; ++i){
 		if(is_perfect(i)){
 			std::cout << i << std::endl;
+			write_perfects(sockfd, i);
 		}
 	}
 	end_t = clock();
 	iops_i = (end_t - begin_t)*1000000000/d_count;
 	
+}
+
+int write_perfects(int sockfd, long number){
+	//int sockfd2 = create_socket();
+	//connect_socket(sockfd);	
+	char message[256];
+	sprintf(message, "PFN %ld", number);
+	std::cout << message << std::endl;
+	write_socket(sockfd,message);
+	bzero(message,256);
+	read_socket(sockfd, message);
+	std::string str_message = std::string(message);
+	std::cout << str_message << std::endl;
+	//close(sockfd2);
 }
 
 bool is_perfect(long number){
