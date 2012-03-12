@@ -8,8 +8,8 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host,port)) 
 s.listen(backlog)
 check = 2
-while 1: 
-	client, address = s.accept() 
+client, address = s.accept()
+while 1:
 	data = client.recv(size) 
 	if data:
 		data_array = data.split(" ")
@@ -34,5 +34,4 @@ while 1:
 		else:
 			print 'Unknown data: ' + data
 			client.send('NAK')
-	client.close()
-
+#client.close()
