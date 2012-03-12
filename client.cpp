@@ -22,7 +22,6 @@ int connect_socket(int sockfd);
 int read_socket(int sockfd, char message[]);
 int write_socket(int sockfd,char message[]);
 int iops();
-int request_range(int sockfd, int *lower, int *higher);
 
 static int iops_i;
 static int d_count;
@@ -30,47 +29,34 @@ static int d_count;
 int main(int argc, char const *argv[]){
 	int sockfd = create_socket();
 	connect_socket(sockfd);
-	int lower, higher;
-	iops();
-	request_range(sockfd, &lower, &higher);
-
-	std::cout << lower << " to " << higher << std::endl;
-	perfects(lower,higher);
-	std::cout << "New IOPS " << iops_i << std::endl;
-}
-
-int request_range(int sockfd, int *lower, int *higher){
 	char message[256];
-<<<<<<< HEAD
-	sprintf(message, "REQ %i", iops());
-=======
-	sprintf(message, "IOPS %i", iops_i);
->>>>>>> 39e0e53037a74bd1bca9b5394a8b1dac59997f19
+	sprintf(message, "IOPS %i", iops());
 	std::cout << message << std::endl;
 	write_socket(sockfd,message);
 	bzero(message,256);
 	read_socket(sockfd, message);
-	std::istringstream iss(std::string(message));
+	std::string str_message = std::string(message);
+	std::cout << str_message << std::endl;
+	std::istringstream iss(str_message);
 	int count = 0;
+	std::string lower_s;
+	std::string higher_s; 
 	do{
 		std::string sub;
-<<<<<<< HEAD
-		if(count == 1){
+		if(count == 2){
 			iss >> lower_s;
-		}else if(count == 2){
+		}else if(count == 3){
 			iss >> higher_s;
 		}else{
 			iss >> sub;
-=======
-		iss >> sub;
-		if(count == 2){
-			*lower = atoi(sub.c_str());
-		}else if(count == 3){
-			*higher = atoi(sub.c_str());
->>>>>>> 39e0e53037a74bd1bca9b5394a8b1dac59997f19
 		}
 		count++;
 	}while(iss);
+	int lower_i = atoi(lower_s.c_str());
+	int higher_i = atoi(higher_s.c_str());
+	std::cout << atoi(lower_s.c_str()) << " to " << atoi(higher_s.c_str())<< std::endl;
+	perfects(lower_i,higher_i);
+	std::cout << "New IOPS " << iops_i << std::endl;
 }
 
 int iops(){
