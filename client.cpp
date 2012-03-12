@@ -27,15 +27,17 @@ int iops();
 int close_socket(int sockfd);
 int close_server(int sockfd);
 
-static int iops_i;
-static int d_count;
+static long iops_i;
+static long d_count;
 
 int main(int argc, char const *argv[]){
+	iops();
 	int sockfd = create_socket();
 	connect_socket(sockfd);
 	int lower_i;
+	int higher_i;
 	for(int i = 0; i < 10; i++){
-		int higher_i;
+		std::cout << "request" << std::endl;
 		request_range(sockfd,&lower_i,&higher_i);
 		//close(sockfd);
 		perfects(sockfd,lower_i,higher_i);
@@ -73,7 +75,7 @@ int close_socket(int sockfd){
 int request_range(int sockfd, int *lower_i, int *higher_i){
 	
 	char message[256];
-	sprintf(message, "REQ %i", iops());
+	sprintf(message, "REQ %ld", iops_i);
 	std::cout << message << std::endl;
 	write_socket(sockfd,message);
 	bzero(message,256);
@@ -94,17 +96,20 @@ int request_range(int sockfd, int *lower_i, int *higher_i){
 		}
 		count++;
 	}while(iss);
-	std::cout << *lower_i << " to " << *higher_i<< std::endl;	
+	//std::cout << *lower_i << " to " << *higher_i<< std::endl;	
 }
 
 int iops(){
+	std::cout<< "running iops" << std::endl;
 	clock_t begin_t, end_t;
+	int j;
 	begin_t = clock();
-	for(int i = 1; i <= 1000000000; ++i){
-		int j = 10000/i;
+	for(long i = 1; i <= 1000000000; ++i){
+		j	= 10000/i;
 	}
 	end_t = clock();
 	iops_i = 3*(end_t - begin_t);
+	std::cout << "finished iops" << std::endl;
 	//std::cout << ((double)(end_t - begin_t))/CLOCKS_PER_SEC << std::endl;
 	return iops_i;
 }
@@ -147,6 +152,7 @@ int write_socket(int sockfd,char message[]){
 
 int perfects(int sockfd, long lower, long higher){
 	clock_t begin_t, end_t;
+	d_count = 0;
 	begin_t = clock();
 	for(long i = lower; i <= higher ; ++i){
 		if(is_perfect(i)){
@@ -155,7 +161,7 @@ int perfects(int sockfd, long lower, long higher){
 		}
 	}
 	end_t = clock();
-	iops_i = (end_t - begin_t)*1000000000/d_count;
+	//iops_i = (end_t - begin_t)*1000000000/d_count;
 	
 }
 
