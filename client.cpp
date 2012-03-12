@@ -29,8 +29,10 @@ static int d_count;
 int main(int argc, char const *argv[]){
 	int sockfd = create_socket();
 	connect_socket(sockfd);
+	
+
 	char message[256];
-	sprintf(message, "IOPS %i", iops());
+	sprintf(message, "REQ %i", iops());
 	std::cout << message << std::endl;
 	write_socket(sockfd,message);
 	bzero(message,256);
@@ -40,21 +42,21 @@ int main(int argc, char const *argv[]){
 	std::istringstream iss(str_message);
 	int count = 0;
 	std::string lower_s;
-	std::string higher_s; 
+	std::string higher_s;
+	int lower_i, higher_i;
 	do{
 		std::string sub;
-		if(count == 2){
-			iss >> lower_s;
-		}else if(count == 3){
-			iss >> higher_s;
-		}else{
-			iss >> sub;
+		iss >> sub;
+		if(count == 1){
+			lower_i = atoi(sub.c_str());
+		}else if(count == 2){
+			higher_i = atoi(sub.c_str());
 		}
 		count++;
 	}while(iss);
-	int lower_i = atoi(lower_s.c_str());
-	int higher_i = atoi(higher_s.c_str());
-	std::cout << atoi(lower_s.c_str()) << " to " << atoi(higher_s.c_str())<< std::endl;
+	std::cout << lower_i << " to " << higher_i<< std::endl;
+	
+
 	perfects(lower_i,higher_i);
 	std::cout << "New IOPS " << iops_i << std::endl;
 }
