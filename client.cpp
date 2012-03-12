@@ -15,6 +15,7 @@
 
 long factor_pair(long number, long factor);
 bool is_perfect(long number);
+int request_range(int sockfd, int *lower_i, int *higher_i);
 int sum_factors(long number);
 int perfects(long lower, long higher);
 int create_socket();
@@ -29,8 +30,18 @@ static int d_count;
 int main(int argc, char const *argv[]){
 	int sockfd = create_socket();
 	connect_socket(sockfd);
-	
 
+	int lower_i;
+	int higher_i;
+
+	request_range(sockfd,&lower_i,&higher_i);	
+
+	perfects(lower_i,higher_i);
+	std::cout << "New IOPS " << iops_i << std::endl;
+}
+
+int request_range(int sockfd, int *lower_i, int *higher_i){
+	
 	char message[256];
 	sprintf(message, "REQ %i", iops());
 	std::cout << message << std::endl;
@@ -43,22 +54,18 @@ int main(int argc, char const *argv[]){
 	int count = 0;
 	std::string lower_s;
 	std::string higher_s;
-	int lower_i, higher_i;
 	do{
 		std::string sub;
 		iss >> sub;
 		if(count == 1){
-			lower_i = atoi(sub.c_str());
+			*lower_i = atoi(sub.c_str());
 		}else if(count == 2){
-			higher_i = atoi(sub.c_str());
+			*higher_i = atoi(sub.c_str());
 		}
 		count++;
 	}while(iss);
-	std::cout << lower_i << " to " << higher_i<< std::endl;
+	std::cout << *lower_i << " to " << *higher_i<< std::endl;
 	
-
-	perfects(lower_i,higher_i);
-	std::cout << "New IOPS " << iops_i << std::endl;
 }
 
 int iops(){
