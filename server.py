@@ -49,8 +49,9 @@ while 1:
 				elif data_array[0] == 'EXT':
 					print 'Exit requested'
 					client.send('ACK EXT')
-					for c in socket_list:
-						c.close()
+					for l in listener_list:
+						l.send('EXT')
+						l.close()
 					sys.exit()
 				else:
 					print 'Unknown data: ' + data
