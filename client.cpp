@@ -10,6 +10,7 @@
 #include <netdb.h> 
 #include <string.h>
 #include <sstream>
+#include <pthread.h>
 
 #define PORT 7331
 
@@ -27,6 +28,8 @@ int iops();
 int close_socket(int sockfd);
 int close_server(int sockfd);
 int finish_range(int sockfd, int lower_i, int higher_i);
+int create_listener();
+void *listener_code(void *data);
 
 static long iops_i;
 static long d_count;
@@ -40,14 +43,13 @@ int main(int argc, char const *argv[]){
 
 	int lower_i;
 	int higher_i;
-	for(int i = 0; i > 10; i++){
-		request_range(sockfd,&lower_i,&higher_i);
-		//close(sockfd);
-		perfects(sockfd,lower_i,higher_i);
-		finish_range(sockfd,lower_i,higher_i);
+	for(int i = 0; ; i++){
+		//request_range(sockfd,&lower_i,&higher_i);
+		//perfects(sockfd,lower_i,higher_i);
+		//finish_range(sockfd,lower_i,higher_i);
 	}
 	//close_server(sockfd);
-	close_socket(sockfd);
+	//close_socket(sockfd);
 }
 
 int create_listener(){
@@ -55,10 +57,11 @@ int create_listener(){
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-	pthread_create(&listener,&attr, listener, (void *)1);
+	int i = 0;
+	pthread_create(&listener,&attr, listener_code, (void *)i);
 }
 
-void *listener(void *data){
+void *listener_code(void *data){
 	int sockfd = create_socket();
 	connect_socket(sockfd);
 	
@@ -69,8 +72,9 @@ void *listener(void *data){
 	bzero(message,256);
 	read_socket(sockfd, message);
 	std::cout << "end message: "<< message << std::endl;
-	close(sockfd);
 	
+	close(sockfd);
+	exit(0);
 }
 
 int close_server(int sockfd){
