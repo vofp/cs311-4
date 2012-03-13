@@ -6,16 +6,17 @@ host = ''
 port = 7331
 backlog = 5 
 size = 255 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-s.bind((host,port)) 
-s.listen(backlog)
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+server_socket.bind((host,port)) 
+server_socket.listen(backlog)
+perfect_numbers = []
 check = 2
-socket_list = [s]
+socket_list = [server_socket]
 listener_list = []
 while 1:
 	readable, writeable, error = select.select(socket_list,[],[])
 	for client in readable:
-		if client is s: 
+		if client is server_socket: 
 			new_client, address = s.accept()
 			socket_list.append(new_client)
 			print 'Connected by', address
@@ -35,8 +36,13 @@ while 1:
 				elif data_array[0] == 'SIG':
 					listener_list.append(client)
 				elif data_array[0] == 'PFN':
+					perfect_numbers.append(data_array[1])
 					print 'Perfect: ' + str(data_array[1])
 					client.send('ACK PFN')
+				elif data_array[0] == 'RPT':
+					print 'Request for all perfects found'
+					for perfect in perfect_numbers:
+						client.send(perfect)
 				elif data_array[0] == 'DON':
 					print 'Range Done: ' + str(data_array[1]) + ' to ' + str(data_array[2])
 					client.send('ACK DON')
