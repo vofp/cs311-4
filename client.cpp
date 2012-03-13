@@ -32,12 +32,15 @@ static long iops_i;
 static long d_count;
 
 int main(int argc, char const *argv[]){
-	iops();
+	//iops();
 	int sockfd = create_socket();
 	connect_socket(sockfd);
+	
+	create_listener();	
+
 	int lower_i;
 	int higher_i;
-	for(int i = 0; ; i++){
+	for(int i = 0; i > 10; i++){
 		request_range(sockfd,&lower_i,&higher_i);
 		//close(sockfd);
 		perfects(sockfd,lower_i,higher_i);
@@ -45,6 +48,29 @@ int main(int argc, char const *argv[]){
 	}
 	//close_server(sockfd);
 	close_socket(sockfd);
+}
+
+int create_listener(){
+	pthread_t listener;
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+	pthread_create(&listener,&attr, listener, (void *)1);
+}
+
+void *listener(void *data){
+	int sockfd = create_socket();
+	connect_socket(sockfd);
+	
+	char message[256];
+	sprintf(message, "SIG");
+	std::cout << message << std::endl;
+	write_socket(sockfd,message);
+	bzero(message,256);
+	read_socket(sockfd, message);
+	std::cout << "end message: "<< message << std::endl;
+	close(sockfd);
+	
 }
 
 int close_server(int sockfd){

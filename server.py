@@ -11,6 +11,7 @@ s.bind((host,port))
 s.listen(backlog)
 check = 2
 socket_list = [s]
+listener_list = []
 while 1:
 	readable, writeable, error = select.select(socket_list,[],[])
 	for client in readable:
@@ -31,6 +32,8 @@ while 1:
 						check += 1
 					client.send('RES '+str(lower) + ' '+ str(check-1))
 					print 'request from ' + str(lower) + ' to ' + str(check-1)
+				elif data_array[0] == 'SIG':
+					listener_list.append(client)
 				elif data_array[0] == 'PFN':
 					print 'Perfect: ' + str(data_array[1])
 					client.send('ACK PFN')
