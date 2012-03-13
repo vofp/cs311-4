@@ -35,7 +35,7 @@ static long iops_i;
 static long d_count;
 
 int main(int argc, char const *argv[]){
-	//iops();
+	iops();
 	int sockfd = create_socket();
 	connect_socket(sockfd);
 	
