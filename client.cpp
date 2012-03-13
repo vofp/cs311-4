@@ -44,9 +44,9 @@ int main(int argc, char const *argv[]){
 	int lower_i;
 	int higher_i;
 	for(int i = 0; ; i++){
-		//request_range(sockfd,&lower_i,&higher_i);
-		//perfects(sockfd,lower_i,higher_i);
-		//finish_range(sockfd,lower_i,higher_i);
+		request_range(sockfd,&lower_i,&higher_i);
+		perfects(sockfd,lower_i,higher_i);
+		finish_range(sockfd,lower_i,higher_i);
 	}
 	//close_server(sockfd);
 	//close_socket(sockfd);
@@ -67,7 +67,6 @@ void *listener_code(void *data){
 	
 	char message[256];
 	sprintf(message, "SIG");
-	std::cout << message << std::endl;
 	write_socket(sockfd,message);
 	bzero(message,256);
 	read_socket(sockfd, message);
