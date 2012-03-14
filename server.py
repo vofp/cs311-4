@@ -17,7 +17,7 @@ while 1:
 	readable, writeable, error = select.select(socket_list,[],[])
 	for client in readable:
 		if client is server_socket: 
-			new_client, address = s.accept()
+			new_client, address = server_socket.accept()
 			socket_list.append(new_client)
 			print 'Connected by', address
 		else:
@@ -37,12 +37,15 @@ while 1:
 					listener_list.append(client)
 				elif data_array[0] == 'PFN':
 					perfect_numbers.append(data_array[1])
+					print perfect_numbers
 					print 'Perfect: ' + str(data_array[1])
 					client.send('ACK PFN')
 				elif data_array[0] == 'RPT':
-					print 'Request for all perfects found'
-					for perfect in perfect_numbers:
-						client.send(perfect)
+					index = int(data_array[1])
+					if index < len(perfect_numbers):
+						client.send('RES '+ perfect_numbers[index])
+					else:
+						client.send('NIL')
 				elif data_array[0] == 'DON':
 					print 'Range Done: ' + str(data_array[1]) + ' to ' + str(data_array[2])
 					client.send('ACK DON')
