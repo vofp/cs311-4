@@ -140,14 +140,14 @@ int request_range(int sockfd, int *lower_i, int *higher_i){
 
 int iops(){
 	clock_t begin_t, end_t;
-	int j;
+	//int j;
 	begin_t = clock();
 	for(long i = 1; i <= 1000000000; ++i){
-		j	= 10000/i;
+		int j	= 10000/i;
 	}
 	end_t = clock();
-	iops_i = (end_t - begin_t);
-	//std::cout << ((double)(end_t - begin_t))/CLOCKS_PER_SEC << std::endl;
+	iops_i = 100*(end_t - begin_t);
+	std::cout << ((double)iops_i)/CLOCKS_PER_SEC << std::endl;
 	return iops_i;
 }
 
@@ -198,8 +198,8 @@ int perfects(int sockfd, long lower, long higher){
 		}
 	}
 	end_t = clock();
-	iops_i = (end_t - begin_t)*1000000000/d_count;
-	
+	std::cout << d_count << " in " << ((double)end_t - begin_t)/CLOCKS_PER_SEC << std::endl;
+	iops_i = (15/(((double)end_t - begin_t)/CLOCKS_PER_SEC)) * iops_i;	
 }
 
 int write_perfects(int sockfd, long number){

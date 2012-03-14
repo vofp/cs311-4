@@ -25,12 +25,16 @@ while 1:
 			if data:
 				data_array = data.split(" ")
 				if data_array[0] == 'REQ':
-					iops = float(data_array[1])/1000000.0
-					divisions = 15/iops*1000000000
+					print data
+					#iops = float(data_array[1])/1000000.0
+					divisions = int(data_array[1])
+					print divisions
 					lower = check
-					while(divisions > 0):
-						divisions -= check
-						check += 1
+					#while(divisions > 0):
+					#	divisions -= check
+					#	check += 1
+					#check = int((2 * divisions - lower - lower **2 ) ** 0.5)+1
+					check = int((2*division+2)**0.5)
 					client.send('RES '+str(lower) + ' '+ str(check-1))
 					print 'request from ' + str(lower) + ' to ' + str(check-1)
 				elif data_array[0] == 'SIG':
