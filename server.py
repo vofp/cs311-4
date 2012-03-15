@@ -1,6 +1,14 @@
 import socket
 import sys
 import select 
+import signal
+def close(signum,fname):
+	client.send('ACK EXT')
+	for l in listener_list:
+		l.send('EXT')
+		l.close()
+	sys.exit()
+	
 
 host = '' 
 port = 7331
@@ -13,6 +21,8 @@ perfect_numbers = []
 check = 2
 socket_list = [server_socket]
 listener_list = []
+signal.signal(signal.SIGTERM,close)
+signal.signal(signal.SIGINT,close)
 while 1:
 	readable, writeable, error = select.select(socket_list,[],[])
 	for client in readable:
@@ -34,7 +44,7 @@ while 1:
 					#	divisions -= check
 					#	check += 1
 					#check = int((2 * divisions - lower - lower **2 ) ** 0.5)+1
-					check = int((2*division+2)**0.5)
+					check += int((2*divisions+2)**0.5)
 					client.send('RES '+str(lower) + ' '+ str(check-1))
 					print 'request from ' + str(lower) + ' to ' + str(check-1)
 				elif data_array[0] == 'SIG':
