@@ -11,6 +11,7 @@
 #include <string.h>
 #include <sstream>
 #include <pthread.h>
+#include <csignal>
 
 #define PORT 7331
 
@@ -25,7 +26,7 @@ int connect_socket(int sockfd);
 int read_socket(int sockfd, char message[]);
 int write_socket(int sockfd,char message[]);
 int iops();
-int close_socket(int sockfd);
+void close_socket(int sockfd);
 int close_server(int sockfd);
 int finish_range(int sockfd, int lower_i, int higher_i);
 int create_listener();
@@ -33,13 +34,17 @@ void *listener_code(void *data);
 
 static long iops_i;
 static long d_count;
+static int sockfd;
 
 int main(int argc, char const *argv[]){
 	iops();
-	int sockfd = create_socket();
+	sockfd = create_socket();
 	connect_socket(sockfd);
 	
 	create_listener();	
+	//atexit(close_socket(sockfd));
+	signal(SIGTERM,close_socket);
+	signal(SIGINT,close_socket);
 
 	int lower_i;
 	int higher_i;
@@ -51,6 +56,8 @@ int main(int argc, char const *argv[]){
 	//close_server(sockfd);
 	//close_socket(sockfd);
 }
+
+
 
 int create_listener(){
 	pthread_t listener;
@@ -89,7 +96,7 @@ int close_server(int sockfd){
 	close(sockfd);
 }
 
-int close_socket(int sockfd){
+void close_socket(int sockfd22){
 	char message[256];
 	sprintf(message, "CLS");
 	std::cout << message << std::endl;
@@ -100,6 +107,7 @@ int close_socket(int sockfd){
 	std::cout << str_message << std::endl;
 	std::istringstream iss(str_message);
 	close(sockfd);
+	exit(0);
 }
 
 int finish_range(int sockfd, int lower_i, int higher_i){
