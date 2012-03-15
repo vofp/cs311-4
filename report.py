@@ -1,8 +1,9 @@
 #!/usr/bin/env python 
 
 import socket 
-
-host = 'os-class.engr.oregonstate.edu' 
+import sys
+#host = 'os-class.engr.oregonstate.edu' 
+host = sys.argv[1]
 port = 7331 
 size = 255 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 

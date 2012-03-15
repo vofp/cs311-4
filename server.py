@@ -10,6 +10,7 @@ size = 255
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 server_socket.bind((host,port)) 
 server_socket.listen(backlog)
+print "Socket on ", socket.gethostname(), " open on port ", port
 perfect_numbers = []
 check = 2
 socket_list = [server_socket]
