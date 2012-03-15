@@ -2,13 +2,6 @@ import socket
 import sys
 import select 
 import signal
-def close(signum,fname):
-	client.send('ACK EXT')
-	for l in listener_list:
-		l.send('EXT')
-		l.close()
-	sys.exit()
-	
 
 host = '' 
 port = 7331
@@ -21,8 +14,18 @@ perfect_numbers = []
 check = 2
 socket_list = [server_socket]
 listener_list = []
+
+def close(signum,fname):
+	for l in listener_list:
+		l.send('EXT')
+		l.close()
+	server_socket.close()
+	sys.exit()
+	
 signal.signal(signal.SIGTERM,close)
 signal.signal(signal.SIGINT,close)
+
+
 while 1:
 	readable, writeable, error = select.select(socket_list,[],[])
 	for client in readable:
