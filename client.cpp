@@ -22,7 +22,7 @@ int sum_factors(long number);
 int perfects(int sockfd,long lower, long higher);
 int write_perfects(int sockfd, long number);
 int create_socket();
-int connect_socket(int sockfd);
+int connect_socket(int sockfd,char const *hostname);
 int read_socket(int sockfd, char message[]);
 int write_socket(int sockfd,char message[]);
 int iops();
@@ -35,15 +35,20 @@ void *listener_code(void *data);
 static long iops_i;
 static long d_count;
 static int sockfd;
+const char* hostname;
 
 int main(int argc, char const *argv[]){
-	
+	if(argc != 2){
+		std::cout << "Need argument for Hostname" << std::endl;
+	}
+
+	hostname = argv[1];
 	// Setting first number for iops_i
 	iops();
 
 	// Opens and connects to server
 	sockfd = create_socket();
-	connect_socket(sockfd);
+	connect_socket(sockfd,hostname);
 	
 	// creats thread that listen for a kill message
 	create_listener();
@@ -90,11 +95,11 @@ int create_socket(){
 
 /* This creates to the sockets
  */
-int connect_socket(int sockfd){
+int connect_socket(int sockfd, char const *hostname){
 	struct sockaddr_in serveraddr;	
 	serveraddr.sin_family = AF_INET;
 	struct hostent *server;
-	server = gethostbyname("os-class.engr.oregonstate.edu");
+	server = gethostbyname(hostname);
 	bcopy((char *)server->h_addr, 
          (char *)&serveraddr.sin_addr.s_addr,
          server->h_length);
@@ -122,7 +127,7 @@ int create_listener(){
  */
 void *listener_code(void *data){
 	int sockfd = create_socket();
-	connect_socket(sockfd);
+	connect_socket(sockfd, hostname);
 	
 	char message[256];
 	sprintf(message, "SIG");
